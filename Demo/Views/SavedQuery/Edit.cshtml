@@ -1,0 +1,69 @@
+﻿@using Demo.Data.Domain
+
+@model SavedQuery
+
+@{
+    ViewBag.Title = "Edit Saved Query";
+}
+
+<div id="form-section" class="row">
+    <article class="col-md-12">
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Details</h5>
+
+                <form role="form" asp-action="Create" method="post" id="edit-form">
+                    <fieldset>
+                        <input type="hidden" name="Id" value="@Model.Id" />
+                        <div class="form-group">
+                            <label for="Name">Name</label>
+                            <input type="text" class="form-control" asp-for="Name" placeholder="Name" required />
+                        </div>
+                        @*<div class="form-group">
+                            <label for="Query">Query</label>
+                            <input type="text" class="form-control" asp-for="Query" placeholder="Query" required />
+                        </div>*@
+                        <div class="pull-right">
+                            <a href="javascript:history.back();" class="btn btn-default">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </article>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(function() {
+            $('#edit-form').formValidation({
+                framework: 'bootstrap',
+                err: {
+                    container: 'popover'
+                }
+            }).on('success.form.fv',
+                function(e) {
+                    e.preventDefault();
+                    var $form = $(e.target);
+
+                    $.ajax({
+                        url: $form.attr('action'),
+                        type: 'POST',
+                        data: $form.serialize(),
+                        success: function (data) {
+                            if (data.status) {
+                                window.location = data.redirectUrl;
+                            } else {
+                                swal({
+                                    title: "",
+                                    text: data.message
+                                });
+                            }
+                        }
+                    });
+                });
+        });
+    </script>
+}

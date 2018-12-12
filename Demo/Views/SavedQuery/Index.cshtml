@@ -1,0 +1,94 @@
+﻿@using System.Globalization
+
+@{
+    ViewBag.Title = "Manage Saved Queries";
+
+    string rtlClass = string.Empty;
+    string chosenRtlClass = string.Empty;
+
+    if (CultureInfo.CurrentCulture.TextInfo.IsRightToLeft)
+    {
+        rtlClass = "k-rtl";
+        chosenRtlClass = "chosen-rtl";
+    }
+
+    string entityType = ViewBag.EntityType;
+}
+
+<div id="grid-section" class="row">
+    <div class="col-md-12">
+        <a href="javascript:history.back();" class="btn btn-default">
+            <i class="fa fa-arrow-left"></i>
+            Back
+        </a>
+    </div>
+
+    <div class="clearfix"></div>
+    <br />
+    <div class="col-md-12 @rtlClass">
+        <div id="grid"></div>
+    </div>
+</div>
+
+@section scripts {
+<script type="text/javascript">
+        $(document).ready(function () {
+            $("#grid").kendoGrid({
+                dataSource: {
+                    type: "json",
+                    transport: {
+                        read: {
+                            url: "@Url.Action("Query", new { entityType = entityType })",
+                            type: "POST",
+                            dataType: "json"
+                        }
+                    },
+                    schema: {
+                        data: 'data',
+                        total: 'total',
+                        model: {
+                            id: 'id',
+                            fields: {
+                                name: { type: "string" },
+                                query: { type: "string" }
+                            }
+                        }
+                    },
+                    pageSize: 10,
+                    serverPaging: true,
+                    serverFiltering: true,
+                    serverSorting: true,
+                    sort: { field: "name", dir: "asc" }
+                },
+                filterable: true,
+                sortable: {
+                    allowUnsort: false
+                },
+                pageable: {
+                    refresh: true
+                },
+                scrollable: false,
+                columns: [{
+                    field: "name",
+                    title: 'Name',
+                    filterable: true
+                }, {
+                    field: "query",
+                    title: 'Query',
+                    filterable: true,
+                }, {
+                    field: "id",
+                    title: " ",
+                    template:
+                        '<div class="btn-group">' +
+                        '<a href="/airline/saved-queries/edit/#=id#" class="btn btn-default btn-xs">Edit</a>' +
+                        '<a href="/airline/saved-queries/delete/#=id#" class="btn btn-danger btn-xs" onclick="return confirm(\'Are you sure that you want to delete this record?\')">Delete</a>' +
+                        '</div>',
+                    attributes: { "class": "text-center" },
+                    filterable: false,
+                    width: 120
+                }]
+            });
+        });
+</script>
+}

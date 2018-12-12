@@ -1,0 +1,250 @@
+﻿@using System.Globalization
+@using Demo.Data.Domain
+
+@{
+    ViewBag.Title = "People";
+
+    string rtlClass = string.Empty;
+
+    if (CultureInfo.CurrentCulture.TextInfo.IsRightToLeft)
+    {
+        rtlClass = "k-rtl";
+    }
+}
+
+<div id="grid-section" class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Query Builder</h5>
+
+                <section>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <form class="form-inline">
+                            <div class="form-group">
+                                @Html.ThisApp().SavedQueryDropDownList("SelectedQuery", SavedQueryEntityType.Person, htmlAttributes: new { @class = "form-control" })
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="loadQuery();">
+                                <i class="fa fa-folder-open-o"></i>
+                                Load
+                            </button>
+                        </form>
+                    </div>
+                </section>
+                <section class="clearfix">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div id="query-builder"></div>
+
+                        <button class="btn btn-primary" onclick="runQuery();">
+                            <i class="fa fa-play"></i>
+                            Execute
+                        </button>
+                        <button class="btn btn-warning" onclick="resetQuery();">
+                            <i class="fa fa-refresh"></i>
+                            Reset
+                        </button>
+                        <button class="btn btn-success" onclick="openSaveQueryDialog();">
+                            <i class="fa fa-save"></i>
+                            Save Query
+                        </button>
+                        <a class="btn btn-default" href="@Url.Action("Index", "SavedQuery", new { entityType = "Person" })">
+                            <i class="fa fa-tasks"></i>
+                            Manage Queries
+                        </a>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 @rtlClass">
+        <div id="grid"></div>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Save Query</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form role="form" class="form-horizontal">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div class="form-group">
+                                @Html.Label("Query_Name", "Name", new { @class = "control-label" })
+                                @Html.TextBox("Query_Name", null, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="saveQuery();"><i class="fa fa-save"></i> Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#grid").kendoGrid({
+                dataSource: {
+                    type: "json",
+                    transport: {
+                        read: {
+                            url: "@Url.Action("Query")",
+                            type: "POST",
+                            dataType: "json"
+                        }
+                    },
+                    schema: {
+                        data: 'data',
+                        total: 'total',
+                        model: {
+                            id: 'id',
+                            fields: {
+                                familyName: { type: "string" },
+                                givenNames: { type: "string" },
+                                dateOfBirth: { type: "date" }
+                            }
+                        }
+                    },
+                    pageSize: 10,
+                    serverPaging: true,
+                    serverFiltering: true,
+                    serverSorting: true,
+                    sort: [
+                        { field: "familyName", dir: "asc" },
+                        { field: "givenNames", dir: "asc" }
+                    ]
+                },
+                filterable: true,
+                sortable: {
+                    allowUnsort: false
+                },
+                pageable: {
+                    refresh: true
+                },
+                scrollable: false,
+                columns: [{
+                    field: "familyName",
+                    title: 'Family Name',
+                    filterable: true
+                }, {
+                    field: "givenNames",
+                    title: 'Given Name/s',
+                    filterable: true
+                }, {
+                    field: "dateOfBirth",
+                    title: 'Date of Birth',
+                    filterable: true
+                }]
+            });
+
+            $.get('@Url.Action("GetQueryConfig")', function (json) {
+                $('#query-builder').queryBuilder(json);
+
+                $('#query-builder').on('getSQLFieldID.queryBuilder.filter', function (e) {
+                    switch (e.value) {
+                        case "FamilyName": e.value = "family-name"; break;
+                        case "GivenNames": e.value = "given-names"; break;
+                        case "DateOfBirth": e.value = "date-of-birth"; break;
+                        default: break;
+                    }
+                });
+            });
+        });
+
+         function runQuery() {
+            var result = $('#query-builder').queryBuilder('getSQL', false);
+
+            var grid = $('#grid').data('kendoGrid');
+            grid.dataSource.transport.options.read.url = '@Url.Action("ExecuteQuery")';
+            grid.dataSource.transport.options.read.contentType = "application/json; charset=utf-8";
+            grid.dataSource.transport.parameterMap = function (options, operation) {
+                if (operation === "read") {
+                    var page = grid.dataSource.page();
+
+                    return JSON.stringify({
+                        Query: result.sql,
+                        Skip: (page - 1) * self.gridPageSize,
+                        Take: self.gridPageSize
+                    });
+                }
+            };
+            grid.dataSource.page(1);
+        };
+
+        function resetQuery() {
+            $('#query-builder').queryBuilder('reset');
+
+            var grid = $('#grid').data('kendoGrid');
+            grid.dataSource.transport.options.read.url = '@Url.Action("Query")';
+            grid.dataSource.transport.options.read.contentType = 'application/x-www-form-urlencoded; charset=UTF-8';
+            grid.dataSource.transport.parameterMap = function (options, operation) {
+                return options;
+            };
+            grid.dataSource.page(1);
+        };
+
+        function loadQuery() {
+            var queryId = $('#SelectedQuery').val();
+            $.get("/people/load-query/" + queryId, function (json) {
+                $('#Query_Name').val(json.name);
+                $('#query-builder').queryBuilder('setRulesFromSQL', json.query);
+            });
+        }
+
+        function openSaveQueryDialog() {
+            $("#saveQueryModal").modal("show");
+            $('#Query_Name').focus();
+        };
+
+        function saveQuery() {
+            var queryName = $('#Query_Name').val();
+
+            var result = $('#query-builder').queryBuilder('getSQL', false);
+
+            $.ajax({
+                url: "@Url.Action("SaveQuery")",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    name: queryName,
+                    query: result.sql
+                }),
+                dataType: "json",
+                async: false
+            })
+            .done(function (json) {
+                if (!json || !json.success) {
+                    alert(json.message);
+                    return;
+                }
+
+                if (json.isNew) {
+                    $('#SelectedQuery')
+                      .append($("<option></option>")
+                      .attr("value", json.queryId)
+                      .text(json.name));
+                }
+                alert('Saved!');
+            })
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                console.log(textStatus + ': ' + errorThrown);
+            });
+
+            $("#saveQueryModal").modal("hide");
+        };
+    </script>
+}
