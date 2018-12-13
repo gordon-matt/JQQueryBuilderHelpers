@@ -83,15 +83,14 @@ namespace Demo.Controllers
         {
             var jqQueryBuilderConfig = new JQQueryBuilderConfig
             {
+                // Bootstrap 4 is not supported yet. See more at: https://github.com/mistic100/jQuery-QueryBuilder/issues/432...
                 //Plugins = JQQueryBuilderConfig.DefaultPlugins.Value,
+
+                //  ... so for now, let's use the following plugins only.
                 Plugins = new Dictionary<string, object>
                 {
                     { "sortable", null },
-                    //{ "filter-description", null },
                     { "unique-filter", null },
-                    //{ "bt-tooltip-errors", null },
-                    //{ "bt-selectpicker", null },
-                    //{ "bt-checkbox", null },
                     { "invert", null },
                     { "not-group", null },
                     { "sql-support", JObject.FromObject(new { boolean_as_integer = false }) }

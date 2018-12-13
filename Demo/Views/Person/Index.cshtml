@@ -13,11 +13,10 @@
 }
 
 <div id="grid-section" class="row">
-    <article class="col-md-12">
+    <section class="col-md-12">
         <div class="card">
+            <div class="card-header text-white bg-dark mb-3">Query Builder</div>
             <div class="card-body">
-                <h5 class="card-title">Query Builder</h5>
-
                 <section>
                     <div class="col-md-12">
                         <form class="form-inline">
@@ -40,7 +39,7 @@
                             Execute
                         </button>
                         <button class="btn btn-warning" data-bind="click: resetQuery">
-                            <i class="fa fa-refresh"></i>
+                            <i class="fa fa-sync-alt"></i>
                             Reset
                         </button>
                         <button class="btn btn-success" data-bind="click: openSaveQueryDialog">
@@ -55,21 +54,28 @@
                 </section>
             </div>
         </div>
-    </article>
-    <div class="col-md-12">
-        <div class="col-md-12">
-            <button data-bind="click: create" class="btn btn-primary">
-                <i class="fa fa-plus"></i>
-                Create
-            </button>
+    </section>
+    
+    <section class="col-md-12">
+        <div class="card">
+            <div class="card-header text-white bg-dark mb-3">Grid</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <button data-bind="click: create" class="btn btn-primary">
+                            <i class="fa fa-plus"></i>
+                            Create
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 @rtlClass">
+                        <div id="grid"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="clearfix"></div>
-        <br />
-        <div class="col-md-12 @rtlClass">
-            <div id="grid"></div>
-        </div>
-    </div>
+    </section>
 </div>
 
 <div id="form-section" class="row" style="display:none">
