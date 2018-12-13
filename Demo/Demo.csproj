@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <UserSecretsId>aspnet-Demo-F2083AB4-A85D-44F0-AD1A-DDCE923CB7D2</UserSecretsId>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <TypeScriptToolsVersion>3.1</TypeScriptToolsVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,6 +18,7 @@
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.3.1" />
     <PackageReference Include="Dapper" Version="1.50.5" />
     <PackageReference Include="Extenso.AspNetCore.Mvc" Version="1.1.3" />
+    <PackageReference Include="Extenso.AspNetCore.OData" Version="1.1.3" />
     <PackageReference Include="Extenso.Data" Version="1.1.3" />
     <PackageReference Include="Extenso.Data.Entity" Version="1.1.3" />
     <PackageReference Include="Extenso.Data.QueryBuilder" Version="1.1.2" />
@@ -35,6 +37,38 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.ar.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.az.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.bg.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.cs.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.da.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.de.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.el.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.en.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.es.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.fa-IR.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.fr.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.he.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.it.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.nl.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.no.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.pl.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.pt-BR.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.pt-PT.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.ro.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.ru.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.sq.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.tr.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.ua.js" />
+    <None Include="wwwroot\js\query-builder\i18n\query-builder.zh-CN.js" />
+    <None Include="wwwroot\js\query-builder\query-builder.js" />
+    <None Include="wwwroot\js\query-builder\query-builder.min.js" />
+    <None Include="wwwroot\js\query-builder\query-builder.standalone.js" />
+    <None Include="wwwroot\js\query-builder\query-builder.standalone.min.js" />
   </ItemGroup>
 
 </Project>

@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Demo.Data;
 using Demo.Data.Dapper;
 using Demo.Data.Dapper.Infrastructure;
+using Demo.Infrastructure;
+using Extenso.AspNetCore.OData;
 using Extenso.Data.Entity;
+using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -38,7 +42,15 @@ namespace Demo
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddOData();
+
+            services.AddMvc(options =>
+            {
+                // https://github.com/Microsoft/aspnet-api-versioning/issues/361#issuecomment-427679607
+                // https://blogs.msdn.microsoft.com/webdev/2018/08/27/asp-net-core-2-2-0-preview1-endpoint-routing/
+                // Because conflicts with ODataRouting as of this version could improve performance though
+                options.EnableEndpointRouting = false;
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             ServiceProvider = InitializeContainer(services);
             return ServiceProvider;
@@ -63,6 +75,15 @@ namespace Demo
 
             app.UseMvc(routes =>
             {
+                // Enable all OData functions
+                routes.Select().Expand().Filter().OrderBy().MaxTop(null).Count();
+
+                var registrars = ServiceProvider.GetRequiredService<IEnumerable<IODataRegistrar>>();
+                foreach (var registrar in registrars)
+                {
+                    registrar.Register(routes, app.ApplicationServices);
+                }
+
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
@@ -84,9 +105,12 @@ namespace Demo
 
             builder.RegisterGeneric(typeof(NpgsqlDapperRepository<,>))
                 .As(typeof(IDapperRepository<,>))
+                .WithParameter(new ConnectionStringParameter())
                 .WithParameter(new NamedParameter("schema", "public"))
                 .WithParameter(new TableNameParameter())
                 .InstancePerLifetimeScope();
+
+            builder.RegisterType<ODataRegistrar>().As<IODataRegistrar>().SingleInstance();
 
             var container = builder.Build();
             return new AutofacServiceProvider(container);

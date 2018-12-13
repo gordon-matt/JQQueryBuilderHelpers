@@ -9,6 +9,7 @@ using JQQueryBuilderHelpers;
 using KendoGridBinder;
 using KendoGridBinder.ModelBinder.Mvc;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace Demo.Controllers
 {
@@ -82,7 +83,19 @@ namespace Demo.Controllers
         {
             var jqQueryBuilderConfig = new JQQueryBuilderConfig
             {
-                Plugins = JQQueryBuilderConfig.DefaultPlugins.Value,
+                //Plugins = JQQueryBuilderConfig.DefaultPlugins.Value,
+                Plugins = new Dictionary<string, object>
+                {
+                    { "sortable", null },
+                    //{ "filter-description", null },
+                    { "unique-filter", null },
+                    //{ "bt-tooltip-errors", null },
+                    //{ "bt-selectpicker", null },
+                    //{ "bt-checkbox", null },
+                    { "invert", null },
+                    { "not-group", null },
+                    { "sql-support", JObject.FromObject(new { boolean_as_integer = false }) }
+                },
                 Filters = new List<JQQueryBuilderFilter>
                 {
                     new JQQueryBuilderFilter { Id = "family-name", Field= "\"FamilyName\"" , Label = "Family Name", Operators = JQQueryBuilderConfig.ShortTextOperatorTypes.Value},
