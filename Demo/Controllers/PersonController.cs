@@ -97,7 +97,7 @@ namespace Demo.Controllers
                 },
                 Filters = new List<JQQueryBuilderFilter>
                 {
-                    new JQQueryBuilderFilter { Id = "family-name", Field= "\"FamilyName\"" , Label = "Family Name", Operators = JQQueryBuilderConfig.ShortTextOperatorTypes.Value},
+                    new JQQueryBuilderFilter { Id = "family-name", Field = "\"FamilyName\"" , Label = "Family Name", Operators = JQQueryBuilderConfig.ShortTextOperatorTypes.Value},
                     new JQQueryBuilderFilter { Id = "given-names", Field = "\"GivenNames\"", Label = "Given Name/s", Operators = JQQueryBuilderConfig.ShortTextOperatorTypes.Value },
 
                     new JQQueryBuilderFilter

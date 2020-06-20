@@ -36,6 +36,7 @@ namespace Demo
 
                 var selectList = queries
                     .Select(x => new { x.Id, x.Name })
+                    .OrderBy(x => x.Name)
                     .ToSelectList(
                         value => value.Id,
                         text => text.Name,

@@ -295,23 +295,23 @@ var ViewModel = function () {
             dataType: "json",
             async: false
         })
-            .done(function (json) {
-                if (!json || !json.success) {
-                    alert(json.message);
-                    return;
-                }
+        .done(function (json) {
+            if (!json || !json.success) {
+                alert(json.message);
+                return;
+            }
 
-                if (json.isNew) {
-                    $('#SelectedQuery')
-                        .append($("<option></option>")
-                            .attr("value", json.queryId)
-                            .text(json.name));
-                }
-                alert('Saved!');
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                console.log(textStatus + ': ' + errorThrown);
-            });
+            if (json.isNew) {
+                $('#SelectedQuery')
+                    .append($("<option></option>")
+                        .attr("value", json.queryId)
+                        .text(json.name));
+            }
+            alert('Saved!');
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            console.log(textStatus + ': ' + errorThrown);
+        });
 
         $("#saveQueryModal").modal("hide");
     };
