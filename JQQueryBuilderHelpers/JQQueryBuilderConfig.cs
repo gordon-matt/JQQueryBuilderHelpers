@@ -13,6 +13,7 @@ namespace JQQueryBuilderHelpers
         public static readonly Lazy<List<JQQueryBuilderOperatorType>> NumericOperatorTypes;
         public static readonly Lazy<List<JQQueryBuilderOperatorType>> DateTimeOperatorTypes;
         public static readonly Lazy<List<JQQueryBuilderOperatorType>> BooleanOperatorTypes;
+        public static readonly Lazy<List<JQQueryBuilderOperatorType>> EnumOperatorTypes;
         public static readonly Lazy<Dictionary<string, object>> DefaultPlugins;
 
         static JQQueryBuilderConfig()
@@ -137,6 +138,16 @@ namespace JQQueryBuilderHelpers
                     { "invert", null },
                     { "not-group", null },
                     { "sql-support", JObject.FromObject(new { boolean_as_integer = false }) }
+                };
+            });
+            EnumOperatorTypes = new Lazy<List<JQQueryBuilderOperatorType>>(() =>
+            {
+                return new List<JQQueryBuilderOperatorType>
+                {
+                    JQQueryBuilderOperatorType.Equal,
+                    JQQueryBuilderOperatorType.NotEqual,
+                    JQQueryBuilderOperatorType.In,
+                    JQQueryBuilderOperatorType.NotIn
                 };
             });
         }
